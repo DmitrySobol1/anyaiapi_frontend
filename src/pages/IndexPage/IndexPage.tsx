@@ -1,4 +1,4 @@
-import { Section, Cell, Snackbar, Tappable, Modal, Button, Placeholder } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Snackbar, Tappable, Modal, Button, Placeholder, Spinner } from '@telegram-apps/telegram-ui';
 import { FC, useEffect, useState } from 'react';
 
 import { Page } from '@/components/Page.tsx';
@@ -132,8 +132,12 @@ export const IndexPage: FC = () => {
 
   return (
     <Page back={false}>
-      
-      {loading && <Cell>Загрузка...</Cell>}
+
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+          <Spinner size="m" />
+        </div>
+      )}
 
       {error && <Cell>Ошибка: {error}</Cell>}
 

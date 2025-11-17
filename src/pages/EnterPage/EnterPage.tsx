@@ -55,23 +55,29 @@ export const EnterPage: FC = () => {
 
   return (
     <Page>
-      {isLoading && (
+      {isLoading ? (
         <div
           style={{
-            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             justifyContent: 'center',
-            padding: '100px',
+            minHeight: '300px',
+            gap: '20px',
           }}
         >
           <Spinner size="m" />
+          <div style={{ color: 'var(--tgui--hint_color)', fontSize: '14px' }}>
+            Загрузка...
+          </div>
         </div>
+      ) : (
+        <List>
+          <Section></Section>
+        </List>
       )}
 
       {/* {showTryLater && <TryLater/>} */}
-
-      <List>
-        <Section></Section>
-      </List>
     </Page>
   );
 };

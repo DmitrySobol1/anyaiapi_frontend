@@ -1,4 +1,4 @@
-import { Section, Accordion, Snackbar, Subheadline, Button, Caption} from '@telegram-apps/telegram-ui';
+import { Section, Accordion, Snackbar, Subheadline, Button, Caption, Spinner, Cell} from '@telegram-apps/telegram-ui';
 import { FC, useEffect, useState } from 'react';
 
 import { Page } from '@/components/Page.tsx';
@@ -96,12 +96,18 @@ export const ListAiModels: FC = () => {
 
   return (
     <Page back={false}>
-      
 
+      {loading && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+          <Spinner size="m" />
+        </div>
+      )}
+
+      {error && <Cell>Ошибка: {error}</Cell>}
+
+      {!loading && !error && (
       <Section header="Доступные модели">
-        {!loading &&
-          !error &&
-          aiModels.map((model) => (
+        {aiModels.map((model) => (
             <Accordion
               key={model._id}
               expanded={expandedAccordions.has(model._id)}
@@ -176,6 +182,7 @@ export const ListAiModels: FC = () => {
             </Accordion>
           ))}
       </Section>
+      )}
 
       <TabbarMenu />
 

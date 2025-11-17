@@ -1,4 +1,4 @@
-import { Section, Cell, Button } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Button, Spinner } from '@telegram-apps/telegram-ui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import axios from '@/axios';
@@ -67,28 +67,31 @@ export const MyAccountPage: FC = () => {
 
   return (
     <Page back={false}>
-      <Section header="Личный кабинет">
-        <Cell
-        before = {<CreditCardIcon color="primary" />}
-        after={loading ? 'Загрузка...' : `${balance ?? 0} ₽`}>
-          Баланс
-        </Cell>
 
-<Cell>
-      <Button
-          before={<AddCardIcon />}
-            mode="filled"
-            size="m"
-            onClick={handlePaymentClick}
-          >
-            Пополнить баланс
-          </Button>
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+          <Spinner size="m" />
+        </div>
+      ) : (
+        <Section header="Личный кабинет">
+          <Cell
+            before={<CreditCardIcon color="primary" />}
+            after={`${balance ?? 0} ₽`}>
+            Баланс
+          </Cell>
 
-</Cell>
-
-
-        
-      </Section>
+          <Cell>
+            <Button
+              before={<AddCardIcon />}
+              mode="filled"
+              size="m"
+              onClick={handlePaymentClick}
+            >
+              Пополнить баланс
+            </Button>
+          </Cell>
+        </Section>
+      )}
 
       <TabbarMenu />
     </Page>
