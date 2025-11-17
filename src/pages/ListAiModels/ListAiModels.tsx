@@ -106,7 +106,7 @@ export const ListAiModels: FC = () => {
       {error && <Cell>Ошибка: {error}</Cell>}
 
       {!loading && !error && (
-      <Section header="Доступные модели">
+      <Section header="Доступные AI модели">
         {aiModels.map((model) => (
             <Accordion
               key={model._id}
@@ -172,7 +172,7 @@ export const ListAiModels: FC = () => {
                   <Button
                     onClick={() => handleCheckboxChange(model._id, true)}
                   >
-                    получить токен
+                    получить ключ
                   </Button>
                 )}
 

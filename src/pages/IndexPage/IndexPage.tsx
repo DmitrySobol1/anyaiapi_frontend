@@ -145,12 +145,15 @@ export const IndexPage: FC = () => {
           !error &&
 
       <Section 
-      header="Выбранные модели"
-      footer='Нажмите на модель, что бы скопировать токен в буфер обмена'
+      header="Мои API ключи"
+      footer='Нажмите на ключ, что бы скопировать в буфер обмена'
       
       >
         {chosenModels.length === 0 && (
-          <Cell>Модели не выбраны</Cell>
+          <Cell
+          multiline
+          subtitle = 'cоздайте свой первый API ключ на вкладке «Все AI модели»'
+          >Нет полученных ключей</Cell>
         )}
 
         {chosenModels.map((chosen) => (

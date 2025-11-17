@@ -18,13 +18,13 @@ export const TabbarMenu: FC = () => {
     () => [
       {
         id: 1,
-        text: 'Мои токены',
+        text: 'Мои ключи',
         Icon: DomainVerificationIcon,
         path: ROUTES.INDEX,
       },
       {
         id: 2,
-        text: 'Все модели',
+        text: 'Все AI модели',
         Icon: FormatListBulletedIcon,
         path: ROUTES.LIST_MODELS,
       },
@@ -35,7 +35,7 @@ export const TabbarMenu: FC = () => {
         path: ROUTES.MY_ACCOUNT,
       },
     ],
-    ['Мои токены', 'Все модели', 'Кабинет']
+    ['Мои ключи', 'Все AI модели', 'Кабинет']
   );
 
   const getInitialTab = useCallback(() => {
