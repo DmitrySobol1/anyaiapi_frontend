@@ -42,7 +42,7 @@ export const ListAiModels: FC = () => {
         setLoading(true);
 
         // Получаем все доступные модели с информацией о выборе
-        const modelsResponse = await axios.get('/getAiModels', {
+        const modelsResponse = await axios.get('/api/getAiModels', {
           params: { tlgid }
         });
 
@@ -63,7 +63,7 @@ export const ListAiModels: FC = () => {
       // Отправляем запрос на бэкенд
       try {
         console.log('Sending request:', { tlgid: tlgid, modelId });
-        const response = await axios.post('/chooseAiModel', {
+        const response = await axios.post('/api/chooseAiModel', {
           tlgid: tlgid,
           modelId: modelId,
         });
@@ -71,7 +71,7 @@ export const ListAiModels: FC = () => {
         console.log('Model chosen:', response.data);
 
         // Обновляем список моделей
-        const modelsResponse = await axios.get('/getAiModels', {
+        const modelsResponse = await axios.get('/api/getAiModels', {
           params: { tlgid }
         });
         setAiModels(modelsResponse.data.models);

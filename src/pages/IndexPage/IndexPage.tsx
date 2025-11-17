@@ -50,7 +50,7 @@ export const IndexPage: FC = () => {
 
         // Получаем выбранные модели пользователя
         if (tlgid) {
-          const chosenResponse = await axios.get('/getUserChosenModels', {
+          const chosenResponse = await axios.get('/api/getUserChosenModels', {
             params: { tlgid }
           });
           setChosenModels(chosenResponse.data.models);
@@ -91,14 +91,14 @@ export const IndexPage: FC = () => {
     if (!modelToDelete) return;
 
     try {
-      const response = await axios.delete('/deleteChosenModel', {
+      const response = await axios.delete('/api/deleteChosenModel', {
         data: { chosenModelId: modelToDelete }
       });
 
       console.log('Model deleted:', response.data);
 
       // Обновляем список выбранных моделей
-      const chosenResponse = await axios.get('/getUserChosenModels', {
+      const chosenResponse = await axios.get('/api/getUserChosenModels', {
         params: { tlgid }
       });
       setChosenModels(chosenResponse.data.models);

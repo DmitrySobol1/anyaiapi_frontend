@@ -48,9 +48,9 @@ export const MyAccountPage: FC = () => {
           return;
         }
 
-        const response = await axios.get(
-          `http://localhost:4444/getBalance?tlgid=${tlgid}`
-        );
+        const response = await axios.get('/api/getBalance', {
+          params: { tlgid }
+        });
 
         if (response.data.status === 'success') {
           setBalance(response.data.balance);
