@@ -24,7 +24,7 @@ export const EnterPage: FC = () => {
   useEffect(() => {
     const fetchEnter = async () => {
       try {
-        const response = await axios.post('/api/enter', { tlgid: tlgid });
+        const response = await axios.post('/enter', { tlgid: tlgid });
 
         if (!response || response.data.statusBE === 'notOk') {
           //   setShowTryLater(true);
