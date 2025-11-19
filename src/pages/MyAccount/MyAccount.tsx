@@ -131,6 +131,14 @@ export const MyAccountPage: FC = () => {
             >
               История запросов
             </Cell>
+            
+            <Cell
+              after={<Icon16Chevron color='#40a7e3'/>}
+               onClick={() => navigate('/promocode-page')}
+            >
+              Использовать промокод
+            </Cell>
+
             <Cell
               after={<Icon16Chevron color='#40a7e3'/>}
                onClick={() => navigate('/help-page')}

@@ -7,6 +7,7 @@ import { ListAiModels } from '@/pages/ListAiModels/ListAiModels';
 import { MyAccountPage } from '@/pages/MyAccount/MyAccount';
 import { RqstHistory } from '@/pages/MyAccount/RqstHistory';
 import { Help } from '@/pages/MyAccount/Help';
+import { Promocode } from '@/pages/MyAccount/Promocode';
 
 interface Route {
   path: string;
@@ -23,5 +24,6 @@ export const routes: Route[] = [
   { path: '/myAccount-page', Component: MyAccountPage },
   { path: '/rqsthistory-page', Component: RqstHistory },
   { path: '/help-page', Component: Help },
+  { path: '/promocode-page', Component: Promocode },
  
 ];
