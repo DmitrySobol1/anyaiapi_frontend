@@ -6,7 +6,6 @@ import {
   Tappable,
   Chip,
   Text,
-  Button,
 } from '@telegram-apps/telegram-ui';
 import type { FC } from 'react';
 import { useState } from 'react';
@@ -15,7 +14,8 @@ import { Page } from '@/components/Page.tsx';
 import { TabbarMenu } from '@/components/TabbarMenu/TabbarMenu.tsx';
 import { useTlgid } from '../../components/Tlgid';
 import axios from '../../axios';
-import { postEvent, hapticFeedback } from '@tma.js/sdk-react';
+import { hapticFeedback } from '@tma.js/sdk-react';
+import { useEffect } from 'react';
 
 export const Promocode: FC = () => {
   const [loading] = useState(false);
@@ -27,6 +27,37 @@ export const Promocode: FC = () => {
   const [showInfoText, setShowInfoText] = useState(false);
 
   const tlgid = useTlgid();
+
+  // Добавляем CSS стили для конфетти
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        top: -10px;
+        z-index: 9999;
+        animation: confetti-fall linear forwards;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(0) rotateZ(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotateZ(720deg);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   const handlePromocodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPromocodeValue(e.target.value);
@@ -42,23 +73,31 @@ export const Promocode: FC = () => {
         hapticFeedback.notificationOccurred('success');
       }
 
-      // Пробуем вызвать конфетти через прямое обращение к Telegram WebApp API
-      if (typeof window !== 'undefined' && (window as any).Telegram?.WebApp) {
-        const tg = (window as any).Telegram.WebApp;
-
-        // Некоторые версии Telegram поддерживают showConfetti
-        if (typeof tg.showConfetti === 'function') {
-          tg.showConfetti();
-        }
-
-        // Или используем postEvent напрямую
-        postEvent('web_app_trigger_haptic_feedback', {
-          type: 'notification',
-          notification_type: 'success'
-        });
-      }
+      // Создаем конфетти анимацию
+      createConfettiAnimation();
     } catch (error) {
       console.error('Error showing confetti:', error);
+    }
+  };
+
+  const createConfettiAnimation = () => {
+    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500'];
+    const confettiCount = 50;
+
+    for (let i = 0; i < confettiCount; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.3 + 's';
+      confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+
+      document.body.appendChild(confetti);
+
+      // Удаляем конфетти после анимации
+      setTimeout(() => {
+        confetti.remove();
+      }, 4000);
     }
   };
 
@@ -85,22 +124,36 @@ export const Promocode: FC = () => {
         setInfoText('Не верный промокод');
         setInfoType('error');
         setShowInfoText(true);
+        // Вибрация при ошибке
+        if (hapticFeedback.notificationOccurred.isAvailable()) {
+          hapticFeedback.notificationOccurred('error');
+        }
       } else if (status === 'alreadyUsed') {
         setInfoText('Вы уже использовали этот промокод');
         setInfoType('error');
         setShowInfoText(true);
+        // Вибрация при ошибке
+        if (hapticFeedback.notificationOccurred.isAvailable()) {
+          hapticFeedback.notificationOccurred('error');
+        }
       } else if (status === 'success') {
         setInfoText(`Начислено ${addedBalance} баллов`);
         setInfoType('success');
         setShowInfoText(true);
         setPromocodeValue('');
         setShowSnackbar(true);
+        // Показываем конфетти при успехе
+        showConfetti();
       }
     } catch (error) {
       console.error('Error applying promocode:', error);
       setInfoText('Произошла ошибка при применении промокода');
       setInfoType('error');
       setShowInfoText(true);
+      // Вибрация при ошибке
+      if (hapticFeedback.notificationOccurred.isAvailable()) {
+        hapticFeedback.notificationOccurred('error');
+      }
     } finally {
       setBtnLoading(false);
     }
@@ -162,8 +215,6 @@ export const Promocode: FC = () => {
                 </Text>
               )}
             </>
-
-            <Button onClick={showConfetti}>Показать конфетти</Button>
           </Section>
         </>
       )}

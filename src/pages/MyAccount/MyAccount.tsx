@@ -10,6 +10,9 @@ import { TabbarMenu } from '@/components/TabbarMenu/TabbarMenu.tsx';
 
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AddCardIcon from '@mui/icons-material/AddCard';
+import ManageHistoryIcon from '@mui/icons-material/ManageHistory';
+import LoyaltyIcon from '@mui/icons-material/Loyalty';
+import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 
 import { Icon16Chevron } from '@telegram-apps/telegram-ui/dist/icons/16/chevron';
 
@@ -128,6 +131,7 @@ export const MyAccountPage: FC = () => {
               after={<Icon16Chevron color='#40a7e3' />}
               onClick={() => navigate('/rqsthistory-page')}
               style={{ cursor: 'pointer' }}
+              before={<ManageHistoryIcon color='primary'/>}
             >
               История запросов
             </Cell>
@@ -135,6 +139,7 @@ export const MyAccountPage: FC = () => {
             <Cell
               after={<Icon16Chevron color='#40a7e3'/>}
                onClick={() => navigate('/promocode-page')}
+               before={<LoyaltyIcon color='primary'/>}
             >
               Использовать промокод
             </Cell>
@@ -142,6 +147,7 @@ export const MyAccountPage: FC = () => {
             <Cell
               after={<Icon16Chevron color='#40a7e3'/>}
                onClick={() => navigate('/help-page')}
+               before={<LiveHelpIcon color='primary'/>}
             >
               Документация
             </Cell>
