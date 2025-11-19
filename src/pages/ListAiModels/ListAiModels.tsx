@@ -106,7 +106,7 @@ export const ListAiModels: FC = () => {
       {error && <Cell>Ошибка: {error}</Cell>}
 
       {!loading && !error && (
-      <Section header="Доступные AI модели">
+      <Section header="Доступные AI модели" style = {{marginBottom: 100}}>
         {aiModels.map((model) => (
             <Accordion
               key={model._id}

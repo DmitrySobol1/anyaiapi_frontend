@@ -147,6 +147,7 @@ export const IndexPage: FC = () => {
       <Section 
       header="Мои API ключи"
       footer='Нажмите на ключ, что бы скопировать в буфер обмена'
+      style = {{marginBottom: 100}}
       
       >
         {chosenModels.length === 0 && (

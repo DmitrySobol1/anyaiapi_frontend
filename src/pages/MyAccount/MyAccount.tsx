@@ -1,6 +1,7 @@
-import { Section, Cell, Button, Spinner } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Button, Spinner, List, Divider } from '@telegram-apps/telegram-ui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '@/axios';
 import { miniApp } from '@tma.js/sdk-react';
 
@@ -10,21 +11,29 @@ import { TabbarMenu } from '@/components/TabbarMenu/TabbarMenu.tsx';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AddCardIcon from '@mui/icons-material/AddCard';
 
+import { Icon16Chevron } from '@telegram-apps/telegram-ui/dist/icons/16/chevron';
+
 import { useTlgid } from '../../components/Tlgid';
 
 export const MyAccountPage: FC = () => {
   const [balance, setBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
   const tlgid = useTlgid();
 
   const handlePaymentClick = async () => {
     try {
       // Отправляем сообщение боту через API
-      await axios.post(`https://api.telegram.org/bot${import.meta.env.VITE_BOT_TOKEN}/sendMessage`, {
-        chat_id: tlgid,
-        text: 'нажмите 👉/pay , что бы пополнить баланс'
-      });
+      await axios.post(
+        `https://api.telegram.org/bot${
+          import.meta.env.VITE_BOT_TOKEN
+        }/sendMessage`,
+        {
+          chat_id: tlgid,
+          text: 'нажмите 👉/pay , что бы пополнить баланс',
+        }
+      );
 
       // Сворачиваем Mini App
       const tg = (window as any).Telegram?.WebApp;
@@ -41,7 +50,6 @@ export const MyAccountPage: FC = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-
         if (!tlgid) {
           console.error('Telegram user ID not found');
           setLoading(false);
@@ -49,7 +57,7 @@ export const MyAccountPage: FC = () => {
         }
 
         const response = await axios.get('/api/getBalance', {
-          params: { tlgid }
+          params: { tlgid },
         });
 
         if (response.data.status === 'success') {
@@ -67,30 +75,71 @@ export const MyAccountPage: FC = () => {
 
   return (
     <Page back={false}>
-
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '200px',
+          }}
+        >
           <Spinner size="m" />
         </div>
       ) : (
-        <Section header="Личный кабинет">
-          <Cell
-            before={<CreditCardIcon color="primary" />}
-            after={`${balance ?? 0} ₽`}>
-            Баланс
-          </Cell>
-
-          <Cell>
-            <Button
-              before={<AddCardIcon />}
-              mode="filled"
-              size="m"
-              onClick={handlePaymentClick}
+        <>
+          <Section header="Личный кабинет">
+            <Cell
+              before={<CreditCardIcon color="primary" />}
+              after={`${balance ?? 0} ₽`}
             >
-              Пополнить баланс
-            </Button>
-          </Cell>
-        </Section>
+              Баланс
+            </Cell>
+
+            <Cell>
+              <Button
+                before={<AddCardIcon />}
+                mode="filled"
+                size="m"
+                onClick={handlePaymentClick}
+              >
+                Пополнить баланс
+              </Button>
+            </Cell>
+          </Section>
+
+          <List
+            style={{
+              background: 'var(--tgui--secondary_bg_color)',
+              padding: '10px 0px 0px 0px',
+            }}
+          >
+            <div
+              style={{
+                background: 'var(--tgui--bg_color)',
+              }}
+            >
+              <Divider />
+            </div>
+          </List>
+
+          <Section>
+            <Cell
+              after={<Icon16Chevron color='#40a7e3' />}
+              onClick={() => navigate('/rqsthistory-page')}
+              style={{ cursor: 'pointer' }}
+            >
+              История запросов
+            </Cell>
+            <Cell
+              after={<Icon16Chevron color='#40a7e3'/>}
+               onClick={() => navigate('/help-page')}
+            >
+              Документация
+            </Cell>
+            
+          </Section>
+        </>
       )}
 
       <TabbarMenu />

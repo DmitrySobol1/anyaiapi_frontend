@@ -5,6 +5,8 @@ import { Onboarding } from '@/pages/Onboarding/Onboarding';
 import { EnterPage } from '@/pages/EnterPage/EnterPage';
 import { ListAiModels } from '@/pages/ListAiModels/ListAiModels';
 import { MyAccountPage } from '@/pages/MyAccount/MyAccount';
+import { RqstHistory } from '@/pages/MyAccount/RqstHistory';
+import { Help } from '@/pages/MyAccount/Help';
 
 interface Route {
   path: string;
@@ -19,5 +21,7 @@ export const routes: Route[] = [
   { path: '/onboarding', Component: Onboarding },
   { path: '/listAiModels', Component: ListAiModels },
   { path: '/myAccount-page', Component: MyAccountPage },
+  { path: '/rqsthistory-page', Component: RqstHistory },
+  { path: '/help-page', Component: Help },
  
 ];
