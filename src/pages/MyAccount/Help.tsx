@@ -70,8 +70,8 @@ export const Help: FC = () => {
             </Cell>
             <Cell
               multiline
-              subtitle="Authorization: Bearer {token}"
-              description="параметр {token} - это ключ от AI модели, который вы получаете на вкладке «Все AI модели» "
+              subtitle="Authorization: Bearer {{tokenAnyAi}}"
+              description="параметр {{tokenAnyAi}} - это ключ от AI модели, который вы получаете на вкладке «Все AI модели» "
               onClick={() => handleCopy('header')}
               style={{ cursor: 'pointer' }}
             >
