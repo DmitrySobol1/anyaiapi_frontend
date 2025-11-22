@@ -27,7 +27,7 @@ export const Help: FC = () => {
       if (text == 'baseurl') {
         textForCopy = 'https://any-ai-api.ru/api/';
       } else if (text == 'header') {
-        textForCopy = 'Authorization: Bearer {token}';
+        textForCopy = 'Authorization: Bearer {{tokenAnyAi}}';
       } else if (text == 'request') {
         textForCopy = '{ "input": "здесь ваш запрос к ИИ" }';
       }
