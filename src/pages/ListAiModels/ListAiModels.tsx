@@ -215,7 +215,7 @@ export const ListAiModels: FC = () => {
 
       {showSnackbar && (
         <Snackbar onClose={() => setShowSnackbar(false)} duration={2000}>
-          Токен получен, перейдите на вкладку "мои токены"
+          Токен получен, перейдите на вкладку "мои ключи"
         </Snackbar>
       )}
     </Page>
