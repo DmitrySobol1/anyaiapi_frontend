@@ -60,12 +60,12 @@ export const Onboarding: FC = () => {
           </Cell>
           <Cell multiline before={<Checkbox defaultChecked />}>
             <Caption level="1" weight="3">
-              нет покупки иностранных номеров телефонов
+              без покупки иностранных номеров телефонов
             </Caption>
           </Cell>
           <Cell multiline before={<Checkbox defaultChecked />}>
             <Caption level="1" weight="3">
-              с оплата в рублях
+              с оплатой в рублях
             </Caption>
           </Cell>
           <Cell multiline before={<Checkbox defaultChecked />}>
