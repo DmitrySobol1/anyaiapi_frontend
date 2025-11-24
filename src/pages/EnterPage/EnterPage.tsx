@@ -1,4 +1,4 @@
-import { Section, List, Spinner } from '@telegram-apps/telegram-ui';
+import { Section, Spinner, Cell } from '@telegram-apps/telegram-ui';
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -20,33 +20,35 @@ export const EnterPage: FC = () => {
 
   //   const [showTryLater, setShowTryLater] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const fetchEnter = async () => {
       try {
         const response = await axios.post('/api/enter', { tlgid: tlgid });
 
-        if (!response || response.data.statusBE === 'notOk') {
-          //   setShowTryLater(true);
+        // Проверяем наличие данных и статус ответа
+        if (
+          !response.data ||
+          response.data.status === 'error'
+        ) {
+          setIsError(true);
           setIsLoading(false);
+          return;
         }
 
         const { result } = response.data.userData;
 
         if (result === 'showOnboarding') {
           console.log('showOnboarding');
-
-          // const nowpaymentid = response.data.userData.nowpaymentid;
-
           navigate('/onboarding');
         } else if (result === 'showIndexPage') {
           console.log('showIndexpage');
-          // const nowpaymentid = response.data.userData.nowpaymentid;
           navigate('/index');
         }
       } catch (error) {
         console.error('Ошибка при выполнении запроса:', error);
-        // setShowTryLater(true);
+        setIsError(true);
         setIsLoading(false);
       }
     };
@@ -55,7 +57,15 @@ export const EnterPage: FC = () => {
 
   return (
     <Page>
-      {isLoading ? (
+      {isError && (
+        <Section>
+          <Cell subtitle="переазгрузите страницу">
+            Упс ... что-то пошло не так
+          </Cell>
+        </Section>
+      )}
+
+      {isLoading && !isError && (
         <div
           style={{
             display: 'flex',
@@ -71,13 +81,7 @@ export const EnterPage: FC = () => {
             Загрузка...
           </div>
         </div>
-      ) : (
-        <List>
-          <Section></Section>
-        </List>
       )}
-
-      {/* {showTryLater && <TryLater/>} */}
     </Page>
   );
 };

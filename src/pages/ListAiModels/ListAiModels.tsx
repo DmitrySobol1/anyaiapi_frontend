@@ -28,7 +28,7 @@ interface AiModel {
 export const ListAiModels: FC = () => {
   const [aiModels, setAiModels] = useState<AiModel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
   const [expandedAccordions, setExpandedAccordions] = useState<Set<string>>(
     new Set()
   );
@@ -40,16 +40,26 @@ export const ListAiModels: FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setIsError(false);
 
         // Получаем все доступные модели с информацией о выборе
         const modelsResponse = await axios.get('/api/getAiModels', {
           params: { tlgid }
         });
 
-        setAiModels(modelsResponse.data.models);
+        // Проверяем наличие данных и статус ответа
+        if (
+          !modelsResponse.data ||
+          modelsResponse.data.status === 'error'
+        ) {
+          setIsError(true);
+          return;
+        }
+
+        setAiModels(modelsResponse.data.models || []);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
         console.error('Error fetching data:', err);
+        setIsError(true);
       } finally {
         setLoading(false);
       }
@@ -68,13 +78,29 @@ export const ListAiModels: FC = () => {
           modelId: modelId,
         });
 
+        // Проверяем статус ответа
+        if (!response.data || response.data.status === 'error') {
+          setIsError(true);
+          return;
+        }
+
         console.log('Model chosen:', response.data);
 
         // Обновляем список моделей
         const modelsResponse = await axios.get('/api/getAiModels', {
           params: { tlgid }
         });
-        setAiModels(modelsResponse.data.models);
+
+        // Проверяем наличие данных и статус ответа
+        if (
+          !modelsResponse.data ||
+          modelsResponse.data.status === 'error'
+        ) {
+          setIsError(true);
+          return;
+        }
+
+        setAiModels(modelsResponse.data.models || []);
 
         // Показываем Snackbar
         setShowSnackbar(true);
@@ -84,12 +110,7 @@ export const ListAiModels: FC = () => {
       } catch (err: any) {
         console.error('Error choosing model:', err);
         console.error('Error response:', err.response?.data);
-        console.error('Error status:', err.response?.status);
-        alert(
-          `Ошибка при выборе модели: ${
-            err.response?.data?.message || err.message
-          }`
-        );
+        setIsError(true);
       }
     }
   };
@@ -103,9 +124,15 @@ export const ListAiModels: FC = () => {
         </div>
       )}
 
-      {error && <Cell>Ошибка: {error}</Cell>}
+      {isError && (
+        <Section>
+          <Cell subtitle="переазгрузите страницу">
+            Упс ... что-то пошло не так
+          </Cell>
+        </Section>
+      )}
 
-      {!loading && !error && (
+      {!loading && !isError && (
       <Section header="Доступные AI модели" style = {{marginBottom: 100}}>
         {aiModels.map((model) => (
             <Accordion

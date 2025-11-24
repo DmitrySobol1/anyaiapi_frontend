@@ -6,6 +6,7 @@ import {
   Tappable,
   Chip,
   Text,
+  Cell,
 } from '@telegram-apps/telegram-ui';
 import type { FC } from 'react';
 import { useState } from 'react';
@@ -25,6 +26,7 @@ export const Promocode: FC = () => {
   const [infoText, setInfoText] = useState('');
   const [infoType, setInfoType] = useState<'success' | 'error'>('error');
   const [showInfoText, setShowInfoText] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const tlgid = useTlgid();
 
@@ -118,7 +120,13 @@ export const Promocode: FC = () => {
         tlgid: tlgid,
       });
 
-      const { status,  addedBalance } = response.data;
+      // Проверяем наличие данных и статус ответа
+      if (!response.data || response.data.status === 'error') {
+        setIsError(true);
+        return;
+      }
+
+      const { status, addedBalance } = response.data;
 
       if (status === 'notFound') {
         setInfoText('Не верный промокод');
@@ -147,13 +155,7 @@ export const Promocode: FC = () => {
       }
     } catch (error) {
       console.error('Error applying promocode:', error);
-      setInfoText('Произошла ошибка при применении промокода');
-      setInfoType('error');
-      setShowInfoText(true);
-      // Вибрация при ошибке
-      if (hapticFeedback.notificationOccurred.isAvailable()) {
-        hapticFeedback.notificationOccurred('error');
-      }
+      setIsError(true);
     } finally {
       setBtnLoading(false);
     }
@@ -161,7 +163,7 @@ export const Promocode: FC = () => {
 
   return (
     <Page back={true}>
-      {loading ? (
+      {loading && (
         <div
           style={{
             display: 'flex',
@@ -172,7 +174,17 @@ export const Promocode: FC = () => {
         >
           <Spinner size="m" />
         </div>
-      ) : (
+      )}
+
+      {isError && (
+        <Section>
+          <Cell subtitle="переазгрузите страницу">
+            Упс ... что-то пошло не так
+          </Cell>
+        </Section>
+      )}
+
+      {!loading && !isError && (
         <>
           <Section header="Использовать промокод">
             <>

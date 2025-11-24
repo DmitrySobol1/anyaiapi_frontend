@@ -21,6 +21,7 @@ import { useTlgid } from '../../components/Tlgid';
 export const MyAccountPage: FC = () => {
   const [balance, setBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();
   const tlgid = useTlgid();
@@ -53,6 +54,9 @@ export const MyAccountPage: FC = () => {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
+        setLoading(true);
+        setIsError(false);
+
         if (!tlgid) {
           console.error('Telegram user ID not found');
           setLoading(false);
@@ -63,11 +67,16 @@ export const MyAccountPage: FC = () => {
           params: { tlgid },
         });
 
-        if (response.data.status === 'success') {
-          setBalance(response.data.balance);
+        // Проверяем наличие данных и статус ответа
+        if (!response.data || response.data.status === 'error') {
+          setIsError(true);
+          return;
         }
+
+        setBalance(response.data.balance);
       } catch (error) {
         console.error('Error fetching balance:', error);
+        setIsError(true);
       } finally {
         setLoading(false);
       }
@@ -78,7 +87,7 @@ export const MyAccountPage: FC = () => {
 
   return (
     <Page back={false}>
-      {loading ? (
+      {loading && (
         <div
           style={{
             display: 'flex',
@@ -89,7 +98,17 @@ export const MyAccountPage: FC = () => {
         >
           <Spinner size="m" />
         </div>
-      ) : (
+      )}
+
+      {isError && (
+        <Section>
+          <Cell subtitle="переазгрузите страницу">
+            Упс ... что-то пошло не так
+          </Cell>
+        </Section>
+      )}
+
+      {!loading && !isError && (
         <>
           <Section header="Личный кабинет">
             <Cell
@@ -127,6 +146,15 @@ export const MyAccountPage: FC = () => {
           </List>
 
           <Section>
+
+            <Cell
+              after={<Icon16Chevron color='#40a7e3'/>}
+               onClick={() => navigate('/promocode-page')}
+               before={<LoyaltyIcon color='primary'/>}
+            >
+              Использовать промокод
+            </Cell>  
+
             <Cell
               after={<Icon16Chevron color='#40a7e3' />}
               onClick={() => navigate('/rqsthistory-page')}
@@ -136,13 +164,7 @@ export const MyAccountPage: FC = () => {
               История запросов
             </Cell>
             
-            <Cell
-              after={<Icon16Chevron color='#40a7e3'/>}
-               onClick={() => navigate('/promocode-page')}
-               before={<LoyaltyIcon color='primary'/>}
-            >
-              Использовать промокод
-            </Cell>
+            
 
             <Cell
               after={<Icon16Chevron color='#40a7e3'/>}
