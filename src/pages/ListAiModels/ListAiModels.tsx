@@ -22,6 +22,7 @@ import axios from '@/axios';
 import { AccordionSummary } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionSummary/AccordionSummary';
 import { AccordionContent } from '@telegram-apps/telegram-ui/dist/components/Blocks/Accordion/components/AccordionContent/AccordionContent';
 import Chip from '@mui/material/Chip';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface AiModel {
   _id: string;
@@ -255,6 +256,8 @@ export const ListAiModels: FC = () => {
                 <div
                   style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
+                  {model.isChoosed && <CheckIcon/>}
+
                   {model.nameForUser}
 
                   {model.type == 'text_to_text' && (
@@ -282,7 +285,7 @@ export const ListAiModels: FC = () => {
                     />
                   )}
 
-                  {model.isChoosed && (
+                  {/* {model.isChoosed && (
                     <Chip
                       label={
                         <Caption level="2" weight="3">
@@ -300,15 +303,21 @@ export const ListAiModels: FC = () => {
                         },
                       }}
                     />
-                  )}
+                  )} */}
                 </div>
               </AccordionSummary>
               <AccordionContent>
+                
                 <div
                   style={{
                     padding: '1px 0px 10px 40px',
                   }}
                 >
+                  <div>
+                  {model.isChoosed &&<Subheadline level="2" weight="3">ключ получен</Subheadline>}
+                  
+                  </div>
+                  
                   <div
                     style={{
                       padding: '0px 0px 10px 0px',
