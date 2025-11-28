@@ -1,4 +1,15 @@
-import { Section, Accordion, Snackbar, Subheadline, Button, Caption, Spinner, Cell} from '@telegram-apps/telegram-ui';
+import {
+  Section,
+  Accordion,
+  Snackbar,
+  Subheadline,
+  Button,
+  Caption,
+  Spinner,
+  Cell,
+  Divider,
+  List,
+} from '@telegram-apps/telegram-ui';
 import { FC, useEffect, useState } from 'react';
 
 import { Page } from '@/components/Page.tsx';
@@ -23,6 +34,7 @@ interface AiModel {
   isChoosed?: boolean;
   createdAt: string;
   updatedAt: string;
+  type: string;
 }
 
 export const ListAiModels: FC = () => {
@@ -33,6 +45,15 @@ export const ListAiModels: FC = () => {
     new Set()
   );
   const [showSnackbar, setShowSnackbar] = useState(false);
+  const [filter, setFilter] = useState<
+    'all' | 'text_to_text' | 'text_to_image'
+  >('all');
+
+  // Фильтрация моделей
+  const filteredModels = aiModels.filter((model) => {
+    if (filter === 'all') return true;
+    return model.type === filter;
+  });
 
   const tlgid = useTlgid();
 
@@ -44,14 +65,11 @@ export const ListAiModels: FC = () => {
 
         // Получаем все доступные модели с информацией о выборе
         const modelsResponse = await axios.get('/api/getAiModels', {
-          params: { tlgid }
+          params: { tlgid },
         });
 
         // Проверяем наличие данных и статус ответа
-        if (
-          !modelsResponse.data ||
-          modelsResponse.data.status === 'error'
-        ) {
+        if (!modelsResponse.data || modelsResponse.data.status === 'error') {
           setIsError(true);
           return;
         }
@@ -88,14 +106,11 @@ export const ListAiModels: FC = () => {
 
         // Обновляем список моделей
         const modelsResponse = await axios.get('/api/getAiModels', {
-          params: { tlgid }
+          params: { tlgid },
         });
 
         // Проверяем наличие данных и статус ответа
-        if (
-          !modelsResponse.data ||
-          modelsResponse.data.status === 'error'
-        ) {
+        if (!modelsResponse.data || modelsResponse.data.status === 'error') {
           setIsError(true);
           return;
         }
@@ -117,9 +132,15 @@ export const ListAiModels: FC = () => {
 
   return (
     <Page back={false}>
-
       {loading && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '200px',
+          }}
+        >
           <Spinner size="m" />
         </div>
       )}
@@ -133,8 +154,88 @@ export const ListAiModels: FC = () => {
       )}
 
       {!loading && !isError && (
-      <Section header="Доступные AI модели" style = {{marginBottom: 100}}>
-        {aiModels.map((model) => (
+        <Section header="Доступные AI модели" style={{ marginBottom: 100 }}>
+          {/* Фильтры */}
+          <div
+            style={{
+              display: 'flex',
+              gap: '8px',
+              marginBottom: '16px',
+              padding: '0 16px',
+            }}
+          >
+            <div
+              onClick={() => setFilter('all')}
+              style={{
+                marginTop: 10,
+                padding: '8px 16px',
+                borderRadius: '8px',
+                backgroundColor: filter === 'all' ? '#40a7e2' : '#f4f4f6',
+                // color: 'black',
+                color: filter === 'all' ? '#ffffffff' : '#000000ff',
+                cursor: 'pointer',
+                fontWeight: 500,
+                fontSize: '14px',
+              }}
+            >
+              <Caption level="1" weight="3">
+                все
+              </Caption>
+            </div>
+            <div
+              onClick={() => setFilter('text_to_text')}
+              style={{
+                marginTop: 10,
+                padding: '8px 16px',
+                borderRadius: '8px',
+                backgroundColor:
+                  filter === 'text_to_text' ? '#40a7e2' : '#f4f4f6',
+                color: filter === 'text_to_text' ? '#ffffffff' : '#000000ff',
+                cursor: 'pointer',
+                fontWeight: 500,
+                fontSize: '14px',
+              }}
+            >
+              <Caption level="1" weight="3">
+                текст
+              </Caption>
+            </div>
+            <div
+              onClick={() => setFilter('text_to_image')}
+              style={{
+                marginTop: 10,
+                padding: '8px 16px',
+                borderRadius: '8px',
+                backgroundColor:
+                  filter === 'text_to_image' ? '#40a7e2' : '#f4f4f6',
+                color: filter === 'text_to_image' ? '#ffffffff' : '#000000ff',
+                cursor: 'pointer',
+                fontWeight: 500,
+                fontSize: '14px',
+              }}
+            >
+              <Caption level="1" weight="3">
+                фото
+              </Caption>
+            </div>
+          </div>
+
+          <List
+            style={{
+              background: 'var(--tgui--secondary_bg_color)',
+              padding: '10px 0px 0px 0px',
+            }}
+          >
+            <div
+              style={{
+                background: 'var(--tgui--bg_color)',
+              }}
+            >
+              <Divider />
+            </div>
+          </List>
+
+          {filteredModels.map((model) => (
             <Accordion
               key={model._id}
               expanded={expandedAccordions.has(model._id)}
@@ -151,17 +252,56 @@ export const ListAiModels: FC = () => {
               }}
             >
               <AccordionSummary>
-                {model.nameForUser} {model.isChoosed && 
-                
-                //  <Chip label="получен" variant="filled" color="primary" size="small"/>
-                 <Chip label=<Caption
-                          level="2"
-                          weight="3"
-                        >
+                <div
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  {model.nameForUser}
+
+                  {model.type == 'text_to_text' && (
+                    <Chip
+                      label={
+                        <Caption level="1" weight="3">
+                          текст
+                        </Caption>
+                      }
+                      variant="filled"
+                      color="warning"
+                      size="small"
+                    />
+                  )}
+                  {model.type == 'text_to_image' && (
+                    <Chip
+                      label={
+                        <Caption level="1" weight="3">
+                          фото
+                        </Caption>
+                      }
+                      variant="filled"
+                      color="secondary"
+                      size="small"
+                    />
+                  )}
+
+                  {model.isChoosed && (
+                    <Chip
+                      label={
+                        <Caption level="2" weight="3">
                           получен
-                     
-                        </Caption> variant="filled" color="primary" size="small"/>
-                }
+                        </Caption>
+                      }
+                      variant="filled"
+                      // color="primary"
+                      size="small"
+                      sx={{
+                        backgroundColor: '#000000ff', // свой фон
+                        color: '#ffffff', // цвет текста
+                        '&:hover': {
+                          backgroundColor: '#e64a19', // цвет при наведении
+                        },
+                      }}
+                    />
+                  )}
+                </div>
               </AccordionSummary>
               <AccordionContent>
                 <div
@@ -169,46 +309,34 @@ export const ListAiModels: FC = () => {
                     padding: '1px 0px 10px 40px',
                   }}
                 >
-                  <div style={{
-                    padding: '0px 0px 10px 0px',
-                  }}>
+                  <div
+                    style={{
+                      padding: '0px 0px 10px 0px',
+                    }}
+                  >
+                    <Subheadline level="2" weight="3">
+                      цена за 1 млн. input токенов: {''}
+                      {model.input_token_priceOurRub?.toFixed(2) ?? 'N/A'} ₽
+                    </Subheadline>
 
-
-
-                      <Subheadline
-                          level="2"
-                          weight="3"
-                        >
-                          цена за 1 млн. input токенов:  {''}
-                     {model.input_token_priceOurRub?.toFixed(2) ?? 'N/A'} ₽
-                        </Subheadline>
-
-
-                      <Subheadline
-                          level="2"
-                          weight="3"
-                        >
-                          цена за 1 млн. output токенов: {''}
-                    {model.output_token_priceOurRub?.toFixed(2) ?? 'N/A'} ₽
-                        </Subheadline>
-
-
+                    <Subheadline level="2" weight="3">
+                      цена за 1 млн. output токенов: {''}
+                      {model.output_token_priceOurRub?.toFixed(2) ?? 'N/A'} ₽
+                    </Subheadline>
                   </div>
 
-                {!model.isChoosed && (
-                  <Button
-                    onClick={() => handleCheckboxChange(model._id, true)}
-                  >
-                    получить ключ
-                  </Button>
-                )}
-
-
+                  {!model.isChoosed && (
+                    <Button
+                      onClick={() => handleCheckboxChange(model._id, true)}
+                    >
+                      получить ключ
+                    </Button>
+                  )}
                 </div>
               </AccordionContent>
             </Accordion>
           ))}
-      </Section>
+        </Section>
       )}
 
       <TabbarMenu />

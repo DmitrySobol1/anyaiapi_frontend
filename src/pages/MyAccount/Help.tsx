@@ -111,7 +111,7 @@ export const Help: FC = () => {
               onClick={() => handleCopy('request')}
               style={{ cursor: 'pointer' }}
             >
-              /request - ответ от ИИ в текстовом формате
+              POST |  /request - ответ от ИИ в текстовом формате
             </Cell>
           </Section>
         </>
