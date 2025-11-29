@@ -35,7 +35,7 @@ interface AiModel {
   isChoosed?: boolean;
   createdAt: string;
   updatedAt: string;
-  type: string;
+  type: string[];  // массив типов: ['text_to_text', 'text_to_image', ...]
 }
 
 export const ListAiModels: FC = () => {
@@ -53,7 +53,7 @@ export const ListAiModels: FC = () => {
   // Фильтрация моделей
   const filteredModels = aiModels.filter((model) => {
     if (filter === 'all') return true;
-    return model.type === filter;
+    return model.type?.includes(filter);
   });
 
   const tlgid = useTlgid();
@@ -260,25 +260,17 @@ export const ListAiModels: FC = () => {
 
                   {model.nameForUser}
 
-                  {model.type == 'text_to_text' && (
+                  {model.type?.includes('text_to_text') && (
                     <Chip
-                      label={
-                        <Caption level="1" weight="3">
-                          текст
-                        </Caption>
-                      }
+                      label={<Caption level="1" weight="3">текст</Caption>}
                       variant="filled"
                       color="warning"
                       size="small"
                     />
                   )}
-                  {model.type == 'text_to_image' && (
+                  {model.type?.some((t) => t.includes('image')) && (
                     <Chip
-                      label={
-                        <Caption level="1" weight="3">
-                          фото
-                        </Caption>
-                      }
+                      label={<Caption level="1" weight="3">фото</Caption>}
                       variant="filled"
                       color="secondary"
                       size="small"
