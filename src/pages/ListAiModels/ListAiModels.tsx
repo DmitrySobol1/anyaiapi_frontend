@@ -277,25 +277,7 @@ export const ListAiModels: FC = () => {
                     />
                   )}
 
-                  {/* {model.isChoosed && (
-                    <Chip
-                      label={
-                        <Caption level="2" weight="3">
-                          получен
-                        </Caption>
-                      }
-                      variant="filled"
-                      // color="primary"
-                      size="small"
-                      sx={{
-                        backgroundColor: '#000000ff', // свой фон
-                        color: '#ffffff', // цвет текста
-                        '&:hover': {
-                          backgroundColor: '#e64a19', // цвет при наведении
-                        },
-                      }}
-                    />
-                  )} */}
+                 
                 </div>
               </AccordionSummary>
               <AccordionContent>
