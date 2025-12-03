@@ -244,7 +244,7 @@ export const Help: FC = () => {
                 >
                   <div>
                     <Subheadline level="2" weight="3">
-                      используйте данные значения для параметра format:
+                      значения для параметра format:
                    
                     
                   
